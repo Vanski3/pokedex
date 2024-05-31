@@ -1,5 +1,7 @@
 :root {
-  --identity-primary: #dc0a2d;
+  /* --identity-primary: #dc0a2d; #303338; */
+
+  --identity-primary: #303338;
 
   --grayscale-dark: #212121;
   --grayscale-medium: #666666;
@@ -235,5 +237,61 @@ h2 {
   
   .filter-wrap input {
     accent-color: var(--identity-primary);
+  }
+  
+  .pokemon-list {
+    background-color: var(--grayscale-white);
+    box-shadow: var(--drop-shadow-inner);
+    border-radius: 0.75rem;
+    min-height: calc(85.5% - 1rem);
+    width: calc(100% - 1rem);
+    max-height: 100px;
+    overflow-y: auto;
+  }
+  
+  .list-wrapper {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .list-item {
+    border-radius: 8px;
+    box-shadow: var(--drop-shadow);
+    background-color: var(--grayscale-white);
+    width: 8.85rem;
+    height: 8.85rem;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .list-item .number-wrap {
+    min-height: 16px;
+    text-align: right;
+    padding: 0 8px;
+    color: var(--grayscale-medium);
+  }
+  
+  .list-item .name-wrap {
+    border-radius: 7px;
+    background-color: var(--grayscale-background);
+    padding: 24px 8px 4px 8px;
+    color: var(--grayscale-dark);
+    margin-top: -18px;
+  }
+  
+  .list-item .img-wrap {
+    width: 72px;
+    height: 72px;
+    margin: auto;
+  }
+  
+  .list-item .img-wrap img {
+    width: 100%;
+    height: 100%;
   }
   
