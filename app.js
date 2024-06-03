@@ -97,3 +97,16 @@ function clearSearch() {
   displayPokemons(allPokemon); 
   notFoundMessage.style.display = "none";
 }
+
+const toggleFilterPopupEl = document.querySelector('.sort-wrap');
+toggleFilterPopupEl.addEventListener('click', toggleFilterPopup)
+
+function toggleFilterPopup() {
+  const filterPopupEl = document.querySelector('.filter-wrapper');
+  
+  if (filterPopupEl.style.display == 'block') {
+    filterPopupEl.style.display = 'none';
+  } else {
+    filterPopupEl.style.display = 'block';
+  }
+}
