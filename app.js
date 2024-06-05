@@ -113,29 +113,89 @@ function fetchPokemonData(offset = 0, limit = POKEMON_LOAD_INCREMENT) {
 fetchPokemonData();
 
 function openDialog(details) {
-  dialog.innerHTML = `
-    <button class="close-button">X</button>
-    <div class="dialog-content">
-      <h2 class="dialog-name">${details.name.toUpperCase()}</h2>
-      <h3 class="dialog-id">#${details.id}</h3>
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${details.id}.svg" alt="${details.name}" class="dialog-img">
-      <div class="types-wrap">
-        ${details.types.map((typeInfo) => `<span class="type-badge" style="background-color: ${getTypeColor(typeInfo.type.name)};">${typeInfo.type.name}</span>`).join(" ")}
-      </div>
-      <button class="prev-button"><img src="./assets/arrow-left" alt="Previous"></button>
-      <button class="next-button"><img src="./assets/arrow-right" alt="Next"></button>
-    </div>
-  `;
-  dialog.showModal();
-  
-  const prevButton = dialog.querySelector('.prev-button');
-  const nextButton = dialog.querySelector('.next-button');
-  const closeButton = dialog.querySelector('.close-button');
-  
-  prevButton.addEventListener('click', () => showPrevNextPokemon(details.id - 1));
-  nextButton.addEventListener('click', () => showPrevNextPokemon(details.id + 1));
-  closeButton.addEventListener('click', () => dialog.close());
+  fetch(`https://pokeapi.co/api/v2/pokemon-species/${details.id}/`)
+    .then((response) => response.json())
+    .then((species) => {
+      const description = species.flavor_text_entries.find(entry => entry.language.name === 'en').flavor_text;
+      const typeColor = getTypeColor(details.types[0].type.name);
+      const genderRate = species.gender_rate;
+      const genderRatioFemale = genderRate * 12.5; // Each point equals 12.5%
+      const genderRatioMale = 100 - genderRatioFemale;
+      const habitat = species.habitat ? species.habitat.name : 'Unknown';
+      const category = species.genera.find(genus => genus.language.name === 'en').genus;
+
+      dialog.innerHTML = /*html*/ `
+        <button class="close-button">X</button>
+        <div class="dialog-content">
+          <div class="upper-half">
+            <h2 class="dialog-name">${details.name.toUpperCase()}</h2>
+            <h3 class="dialog-id">#${details.id}</h3>
+            <div class="types-wrap">
+              ${details.types.map((typeInfo) => `<span class="type-badge" style="background-color: ${getTypeColor(typeInfo.type.name)};">${typeInfo.type.name}</span>`).join(" ")}
+            </div>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${details.id}.svg" alt="${details.name}" class="dialog-img">
+          </div>
+          <div class="lower-half">
+            <div class="tabs">
+              <button class="tab-button active" data-tab="about">About</button>
+              <button class="tab-button" data-tab="stats">Stats</button>
+              <button class="tab-button" data-tab="info">Info</button>
+            </div>
+            <div class="tab-content">
+              <div class="tab-pane active" id="about">
+                <p>${description}</p>
+              </div>
+              <div class="tab-pane" id="stats">
+                ${details.stats.map(stat => `
+                  <div class="stat">
+                    <label>${stat.stat.name}</label>
+                    <div class="progress-bar-container">
+                      <progress value="${stat.base_stat}" max="255" style="background-color: ${typeColor};"></progress>
+                      <span class="progress-bar-value">${stat.base_stat}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="tab-pane" id="info">
+                <p>Height: ${details.height / 10} m</p>
+                <p>Weight: ${details.weight / 10} kg</p>
+                <p>Base Experience: ${details.base_experience}</p>
+                <p>Gender Ratio: ${genderRatioFemale}% Female, ${genderRatioMale}% Male</p>
+                <p>Habitat: ${habitat}</p>
+                <p>Category: ${category}</p>
+              </div>
+            </div>
+          </div>
+          <button class="prev-button"><img src="./assets/arrow-left" alt="Previous"></button>
+          <button class="next-button"><img src="./assets/arrow-right" alt="Next"></button>
+        </div>
+      `;
+
+      dialog.showModal();
+      
+      const prevButton = dialog.querySelector('.prev-button');
+      const nextButton = dialog.querySelector('.next-button');
+      const closeButton = dialog.querySelector('.close-button');
+      const tabButtons = dialog.querySelectorAll('.tab-button');
+      const tabPanes = dialog.querySelectorAll('.tab-pane');
+      
+      prevButton.addEventListener('click', () => showPrevNextPokemon(details.id - 1));
+      nextButton.addEventListener('click', () => showPrevNextPokemon(details.id + 1));
+      closeButton.addEventListener('click', () => dialog.close());
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          tabPanes.forEach(pane => pane.classList.remove('active'));
+          document.getElementById(button.dataset.tab).classList.add('active');
+        });
+      });
+    })
+    .catch((error) => console.error("Failed to fetch Pokemon species data:", error));
 }
+
 
 
 function showPrevNextPokemon(id) {
