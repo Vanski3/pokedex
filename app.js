@@ -16,6 +16,77 @@ listWrapper.after(loadMoreButton); // Button unterhalb der Liste platzieren
 
 let allPokemon = [];
 
+function getTypeColor(type) {
+  const typeColors = {
+    normal: '#A8A77A',
+    fire: '#EE8130',
+    water: '#6390F0',
+    electric: '#F7D02C',
+    grass: '#7AC74C',
+    ice: '#96D9D6',
+    fighting: '#C22E28',
+    poison: '#A33EA1',
+    ground: '#E2BF65',
+    flying: '#A98FF3',
+    psychic: '#F95587',
+    bug: '#A6B91A',
+    rock: '#B6A136',
+    ghost: '#735797',
+    dragon: '#6F35FC',
+    dark: '#705746',
+    steel: '#B7B7CE',
+    fairy: '#D685AD'
+  };
+  return typeColors[type] || '#777'; // Default fallback color
+}
+
+function displayPokemons(pokemonArray) {
+  listWrapper.innerHTML = ""; // Leert das Wrapper-Element
+
+  // Fetch detailed data for each Pokémon to get the types
+  pokemonArray.forEach((pokemon) => {
+    const pokemonID = pokemon.url.split("/")[6]; // Extrahiert die ID des Pokémon aus der URL
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`)
+      .then((response) => response.json())
+      .then((details) => {
+        const types = details.types.map((typeInfo) => typeInfo.type.name);
+
+        const typeBadges = types
+          .map((type) => `<span class="type-badge" style="background-color: ${getTypeColor(type)};">${type}</span>`)
+          .join(" ");
+
+        const listItem = document.createElement("div"); // Erstellt ein div-Element für das Pokémon
+        listItem.className = "list-item"; // Setzt die Klasse für das Styling
+        listItem.innerHTML = /*html*/ `
+          <div class="number-wrap">
+              <p class="caption-fonts headline">#${pokemonID}</p>
+          </div>
+          <div class="img-wrap">
+              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg" alt="">
+          </div>
+          <div class="info-wrap">
+              <div class="types-wrap">
+                  ${typeBadges}
+              </div>
+              <div class="name-wrap">
+                  <p class="body3-fonts headline">${pokemon.name}</p> 
+              </div>
+          </div>
+        `;
+
+        listItem.addEventListener("click", async () => {
+          const success = await fetchPokemonDetails(pokemonID); // Abrufen der Details
+          if (success) {
+            window.location.href = `./detail.html?id=${pokemonID}`; // Weiterleiten zur Detailseite
+          }
+        });
+
+        listWrapper.appendChild(listItem); // Hinzufügen des Pokémon zur Liste
+      })
+      .catch((error) => console.error("Failed to fetch detailed Pokemon data:", error)); // Fehlerbehandlung
+  });
+}
+
 function fetchPokemonData(offset = 0, limit = POKEMON_LOAD_INCREMENT) {
   fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`)
     .then((response) => response.json())
@@ -32,7 +103,7 @@ function fetchPokemonData(offset = 0, limit = POKEMON_LOAD_INCREMENT) {
 }
 
 // Initialer Aufruf zum Laden der ersten 40 Pokémon
-fetchPokemonData(); 
+fetchPokemonData();
 
 async function fetchPokemonDetails(id) {
   try {
@@ -47,38 +118,8 @@ async function fetchPokemonDetails(id) {
     return true;
   } catch (error) {
     console.error("Failed to catch Pokemon data before redirect");
-    return false; 
+    return false;
   }
-}
-
-function displayPokemons(pokemonArray) { 
-  listWrapper.innerHTML = ""; // Leert das Wrapper-Element
-
-  pokemonArray.forEach((pokemon) => {
-    const pokemonID = pokemon.url.split("/")[6]; // Extrahiert die ID des Pokémon aus der URL
-    const listItem = document.createElement("div"); // Erstellt ein div-Element für das Pokémon
-    listItem.className = "list-item"; // Setzt die Klasse für das Styling
-    listItem.innerHTML = /*html*/ `
-      <div class="number-wrap">
-          <p class="caption-fonts headline">#${pokemonID}</p>
-      </div>
-      <div class="img-wrap">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg" alt="">
-      </div>
-      <div class="name-wrap">
-          <p class="body3-fonts headline">${pokemon.name}</p> 
-      </div>
-    `;
-
-    listItem.addEventListener("click", async () => {
-      const success = await fetchPokemonDetails(pokemonID); // Abrufen der Details
-      if (success) {
-        window.location.href = `./detail.html?id=${pokemonID}`; // Weiterleiten zur Detailseite
-      }
-    });
-
-    listWrapper.appendChild(listItem); // Hinzufügen des Pokémon zur Liste
-  });
 }
 
 searchInput.addEventListener("keyup", handleSearch);
@@ -123,7 +164,7 @@ toggleFilterPopupEl.addEventListener('click', toggleFilterPopup)
 
 function toggleFilterPopup() {
   const filterPopupEl = document.querySelector('.filter-wrapper');
-  
+
   if (filterPopupEl.style.display == 'block') {
     filterPopupEl.style.display = 'none';
   } else {
@@ -140,4 +181,3 @@ loadMoreButton.addEventListener("click", () => {
   currentOffset += loadCount; // Erhöht den Offset um die Anzahl der zu ladenden Pokémon
   fetchPokemonData(currentOffset, loadCount); // Lädt die nächsten Pokémon
 });
-

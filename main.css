@@ -30,6 +30,29 @@
   --drop-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
   --drop-shadow-hover: 0px 3px 12px 3px rgba(0, 0, 0, 0.2);
   --drop-shadow-inner: 0px 1px 3px 1px rgba(0, 0, 0, 0.25) inset;
+
+   --type-normal: #A8A77A;
+  --type-fire: #EE8130;
+  --type-water: #6390F0;
+  --type-electric: #F7D02C;
+  --type-grass: #7AC74C;
+  --type-ice: #96D9D6;
+  --type-fighting: #C22E28;
+  --type-poison: #A33EA1;
+  --type-ground: #E2BF65;
+  --type-flying: #A98FF3;
+  --type-psychic: #F95587;
+  --type-bug: #A6B91A;
+  --type-rock: #B6A136;
+  --type-ghost: #735797;
+  --type-dragon: #6F35FC;
+  --type-dark: #705746;
+  --type-steel: #B7B7CE;
+  --type-fairy: #D685AD;
+  --default-color: #777;
+  --bg-color: #f8f8f8;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-2-color: rgba(0, 0, 0, 0.2);
 }
 
 .headline{
@@ -287,7 +310,7 @@ body {
 .list-item .name-wrap {
   border-radius: 7px;
   background-color: var(--grayscale-background);
-  padding: 37px 8px 4px 8px;
+  padding: 4px 8px 4px 8px;
   color: var(--grayscale-dark);
   overflow: hidden;
 }
@@ -322,4 +345,19 @@ body {
 
 .load-more-button:hover {
   background-color: #ffb700;
+}
+
+.type-badge {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin: 2px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.types-wrap{
+  padding: 5px;
 }
