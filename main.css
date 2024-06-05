@@ -361,3 +361,87 @@ body {
 .types-wrap{
   padding: 5px;
 }
+
+/* dialog */
+dialog {
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--drop-shadow-hover);
+  padding: 1rem;
+  position: relative;
+  width: 500px; /* Fixed width */
+  height: 700px; /* Fixed height */
+  margin: auto;
+  text-align: center;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+}
+
+.dialog-name {
+  font-family: 'Aldrich', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.dialog-id {
+  margin: 0;
+}
+
+.dialog-img {
+  width: 150px;
+  height: 150px;
+}
+
+dialog .close-button {
+  background: var(--identity-primary);
+  color: var(--grayscale-white);
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: var(--headline-font);
+  text-transform: uppercase;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+dialog .prev-button,
+dialog .next-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+dialog .prev-button {
+  left: -3rem; /* Increased space */
+}
+
+dialog .next-button {
+  right: -3rem; /* Increased space */
+}
+
+dialog .prev-button img,
+dialog .next-button img {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+}
+
+dialog .prev-button:hover img,
+dialog .next-button:hover img,
+dialog .close-button:hover {
+  opacity: 0.7; /* Add hover effect */
+}
