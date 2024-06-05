@@ -1,16 +1,11 @@
 :root {
-  /* --identity-primary: #dc0a2d; #303338; */
-
   --headline-font: "Aldrich";
-
   --identity-primary: #303338;
-
   --grayscale-dark: #212121;
   --grayscale-medium: #666666;
   --grayscale-light: #e0e0e0;
   --grayscale-background: #efefef;
   --grayscale-white: #ffffff;
-
   --headline-font-size: 24px;
   --body1-font-size: 14px;
   --body2-font-size: 12px;
@@ -19,43 +14,39 @@
   --subtitle2-font-size: 12px;
   --subtitle3-font-size: 10px;
   --caption-font-size: 14px;
-
   --headline-line-height: 32px;
   --common-line-height: 16px;
   --caption-line-height: 12px;
-
   --font-weight-regular: 400;
   --font-weight-bold: 700;
-
   --drop-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
   --drop-shadow-hover: 0px 3px 12px 3px rgba(0, 0, 0, 0.2);
   --drop-shadow-inner: 0px 1px 3px 1px rgba(0, 0, 0, 0.25) inset;
-
-   --type-normal: #A8A77A;
-  --type-fire: #EE8130;
-  --type-water: #6390F0;
-  --type-electric: #F7D02C;
-  --type-grass: #7AC74C;
-  --type-ice: #96D9D6;
-  --type-fighting: #C22E28;
-  --type-poison: #A33EA1;
-  --type-ground: #E2BF65;
-  --type-flying: #A98FF3;
-  --type-psychic: #F95587;
-  --type-bug: #A6B91A;
-  --type-rock: #B6A136;
+  --type-normal: #a8a77a;
+  --type-fire: #ee8130;
+  --type-water: #6390f0;
+  --type-electric: #f7d02c;
+  --type-grass: #7ac74c;
+  --type-ice: #96d9d6;
+  --type-fighting: #c22e28;
+  --type-poison: #a33ea1;
+  --type-ground: #e2bf65;
+  --type-flying: #a98ff3;
+  --type-psychic: #f95587;
+  --type-bug: #a6b91a;
+  --type-rock: #b6a136;
   --type-ghost: #735797;
-  --type-dragon: #6F35FC;
+  --type-dragon: #6f35fc;
   --type-dark: #705746;
-  --type-steel: #B7B7CE;
-  --type-fairy: #D685AD;
+  --type-steel: #b7b7ce;
+  --type-fairy: #d685ad;
   --default-color: #777;
   --bg-color: #f8f8f8;
   --shadow-color: rgba(0, 0, 0, 0.1);
   --shadow-2-color: rgba(0, 0, 0, 0.2);
 }
 
-.headline{
+.headline {
   font-family: var(--headline-font);
   text-transform: uppercase;
 }
@@ -293,8 +284,8 @@ body {
   border-radius: 8px;
   box-shadow: var(--drop-shadow);
   background-color: var(--grayscale-white);
-  width: 14.85rem;
-  height: 12.85rem;
+  width: 15.85rem;
+  height: 13.85rem;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -358,7 +349,7 @@ body {
   text-transform: capitalize;
 }
 
-.types-wrap{
+.types-wrap {
   padding: 5px;
 }
 
@@ -367,11 +358,15 @@ dialog {
   border: none;
   border-radius: 8px;
   box-shadow: var(--drop-shadow-hover);
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   padding: 0;
   width: 500px;
   height: 700px;
-  margin: auto;
+  display: none;
+  z-index: 1000;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -379,6 +374,7 @@ dialog {
 
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }
 
 .dialog-content {
@@ -397,9 +393,11 @@ dialog::backdrop {
 }
 
 .dialog-name {
-  font-family: 'Aldrich', sans-serif;
+  font-family: "Aldrich", sans-serif;
   text-transform: uppercase;
   margin: 0;
+  font-size: 1.25rem;
+  padding-bottom: 5px;
 }
 
 .dialog-id {
@@ -410,11 +408,19 @@ dialog::backdrop {
   display: flex;
   gap: 0.5rem;
   margin: 0.5rem 0;
+  justify-content: center;
+}
+
+.type-badge-dialog{
+  margin-top: 42px;
+  font-size: 16px;
+  padding: 4px 6px;
 }
 
 .dialog-img {
   width: 150px;
   height: 150px;
+  margin-top: 24px;
 }
 
 .lower-half {
@@ -460,6 +466,14 @@ dialog::backdrop {
   display: block;
 }
 
+.about-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
 .stat {
   display: flex;
   flex-direction: column;
@@ -469,6 +483,7 @@ dialog::backdrop {
 .stat label {
   text-transform: capitalize;
   margin-bottom: 0.3rem;
+  font-size: 14px;
 }
 
 .progress-bar-container {
@@ -506,7 +521,6 @@ dialog::backdrop {
   font-size: 12px;
 }
 
-
 dialog .close-button {
   background: var(--identity-primary);
   color: var(--grayscale-white);
@@ -523,7 +537,11 @@ dialog .close-button {
 
 dialog .prev-button,
 dialog .next-button {
-  background: none;
+  background: var(--identity-primary);
+  color: white;
+  font-family: var(--headline-font);
+  border-radius: 5px;
+  padding: 6px 6px;
   border: none;
   cursor: pointer;
   position: absolute;
@@ -531,22 +549,15 @@ dialog .next-button {
   transform: translateY(-50%);
 }
 
+dialog .prev-button:hover,
+dialog .next-button:hover {
+background-color: #474d56;
+} 
+
 dialog .prev-button {
   left: 0.5rem;
 }
 
 dialog .next-button {
   right: 0.5rem;
-}
-
-dialog .prev-button img,
-dialog .next-button img {
-  width: 40px;
-  height: 40px;
-}
-
-dialog .prev-button:hover img,
-dialog .next-button:hover img,
-dialog .close-button:hover {
-  opacity: 0.7;
 }

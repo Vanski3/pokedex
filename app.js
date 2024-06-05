@@ -112,17 +112,27 @@ function fetchPokemonData(offset = 0, limit = POKEMON_LOAD_INCREMENT) {
 // Initialer Aufruf zum Laden der ersten 40 Pokémon
 fetchPokemonData();
 
+dialog.style.display = "none"; // Hide by default
+
 function openDialog(details) {
   fetch(`https://pokeapi.co/api/v2/pokemon-species/${details.id}/`)
     .then((response) => response.json())
     .then((species) => {
-      const description = species.flavor_text_entries.find(entry => entry.language.name === 'en').flavor_text;
+      let description = species.flavor_text_entries.find(
+        (entry) => entry.language.name === "en"
+      ).flavor_text;
+
+      // Clean up the description text
+      description = description.replace(/\n/g, " ").replace(/\f/g, " ");
+
       const typeColor = getTypeColor(details.types[0].type.name);
       const genderRate = species.gender_rate;
       const genderRatioFemale = genderRate * 12.5; // Each point equals 12.5%
       const genderRatioMale = 100 - genderRatioFemale;
-      const habitat = species.habitat ? species.habitat.name : 'Unknown';
-      const category = species.genera.find(genus => genus.language.name === 'en').genus;
+      const habitat = species.habitat ? species.habitat.name : "Unknown";
+      const category = species.genera.find(
+        (genus) => genus.language.name === "en"
+      ).genus;
 
       dialog.innerHTML = /*html*/ `
         <button class="close-button">X</button>
@@ -130,10 +140,19 @@ function openDialog(details) {
           <div class="upper-half">
             <h2 class="dialog-name">${details.name.toUpperCase()}</h2>
             <h3 class="dialog-id">#${details.id}</h3>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${
+              details.id
+            }.svg" alt="${details.name}" class="dialog-img">
             <div class="types-wrap">
-              ${details.types.map((typeInfo) => `<span class="type-badge" style="background-color: ${getTypeColor(typeInfo.type.name)};">${typeInfo.type.name}</span>`).join(" ")}
+              ${details.types
+                .map(
+                  (typeInfo) =>
+                    `<span class="type-badge type-badge-dialog" style="background-color: ${getTypeColor(
+                      typeInfo.type.name
+                    )};">${typeInfo.type.name}</span>`
+                )
+                .join(" ")}
             </div>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${details.id}.svg" alt="${details.name}" class="dialog-img">
           </div>
           <div class="lower-half">
             <div class="tabs">
@@ -143,10 +162,14 @@ function openDialog(details) {
             </div>
             <div class="tab-content">
               <div class="tab-pane active" id="about">
-                <p>${description}</p>
+                <div class="about-text">
+                  <p>${description}</p>
+                </div>
               </div>
               <div class="tab-pane" id="stats">
-                ${details.stats.map(stat => `
+                ${details.stats
+                  .map(
+                    (stat) => `
                   <div class="stat">
                     <label>${stat.stat.name}</label>
                     <div class="progress-bar-container">
@@ -154,7 +177,9 @@ function openDialog(details) {
                       <span class="progress-bar-value">${stat.base_stat}</span>
                     </div>
                   </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
               </div>
               <div class="tab-pane" id="info">
                 <p>Height: ${details.height / 10} m</p>
@@ -166,37 +191,45 @@ function openDialog(details) {
               </div>
             </div>
           </div>
-          <button class="prev-button"><img src="./assets/arrow-left" alt="Previous"></button>
-          <button class="next-button"><img src="./assets/arrow-right" alt="Next"></button>
+          <button class="prev-button">Previous</button>
+          <button class="next-button">Next</button>
         </div>
       `;
 
-      dialog.showModal();
-      
-      const prevButton = dialog.querySelector('.prev-button');
-      const nextButton = dialog.querySelector('.next-button');
-      const closeButton = dialog.querySelector('.close-button');
-      const tabButtons = dialog.querySelectorAll('.tab-button');
-      const tabPanes = dialog.querySelectorAll('.tab-pane');
-      
-      prevButton.addEventListener('click', () => showPrevNextPokemon(details.id - 1));
-      nextButton.addEventListener('click', () => showPrevNextPokemon(details.id + 1));
-      closeButton.addEventListener('click', () => dialog.close());
-      
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          tabPanes.forEach(pane => pane.classList.remove('active'));
-          document.getElementById(button.dataset.tab).classList.add('active');
+      dialog.style.display = "block"; // Show the dialog
+      dialog.showModal(); // Ensure it is displayed as a modal
+
+      const prevButton = dialog.querySelector(".prev-button");
+      const nextButton = dialog.querySelector(".next-button");
+      const closeButton = dialog.querySelector(".close-button");
+      const tabButtons = dialog.querySelectorAll(".tab-button");
+      const tabPanes = dialog.querySelectorAll(".tab-pane");
+
+      prevButton.addEventListener("click", () =>
+        showPrevNextPokemon(details.id - 1)
+      );
+      nextButton.addEventListener("click", () =>
+        showPrevNextPokemon(details.id + 1)
+      );
+      closeButton.addEventListener("click", () => {
+        dialog.close();
+        dialog.style.display = "none"; // Hide the dialog after closing
+      });
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          tabPanes.forEach((pane) => pane.classList.remove("active"));
+          document.getElementById(button.dataset.tab).classList.add("active");
         });
       });
     })
-    .catch((error) => console.error("Failed to fetch Pokemon species data:", error));
+    .catch((error) =>
+      console.error("Failed to fetch Pokemon species data:", error)
+    );
 }
-
-
 
 function showPrevNextPokemon(id) {
   if (id < 1 || id > MAX_POKEMON) return; // Grenzen überprüfen
